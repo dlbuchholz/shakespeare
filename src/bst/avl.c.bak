@@ -1,0 +1,46 @@
+
+int height(Node* node) {
+    if(node) {
+        return node->height;
+    } else {
+        return 0;
+    }
+}
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int calc_balance(Node* node) {
+    if(node == NULL) {
+        return 0;
+    } else {
+        return height(node->left) - height(node->right);
+    }
+}
+
+Node* right_rotate(Node* node) {
+    Node* n = node->left;
+    Node* n2 = n->right;
+
+    n->right = node;
+    node->left = n->right;
+
+    node->height = max(height(node->left), height(node->right))+1;
+    n->height = max(height(n->left), height(n->right))+1;
+
+    return n;
+}
+
+Node* left_rotate(Node* node) {
+    Node* n = node->right;
+    Node* n2 = n->left;
+
+    n->left = node;
+    node->right = n2;
+
+    node->height = max(height(node->left), height(node->right))+1;
+    n->height = max(height(n->left), height(n->right))+1;
+
+    return n;
+}
