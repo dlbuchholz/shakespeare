@@ -5,19 +5,13 @@
 
 long get_file_size(const char *fname, FILE* file) {
     long file_size = 0;
-    if (!file) {
-        FILE *f_new = fopen(fname, "r");
-        fseek(f_new, 0, SEEK_END);
-        file_size = ftell(f_new);
-        fseek(f_new, 0, SEEK_SET);
-        fclose(f_new);
-    } else {
+
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
         fseek(file, 0, SEEK_SET);
-    }
-
+    
     if(file_size == 0) {
+        fprintf(stderr, "Error: Unable to calculate file size!");
         exit(EXIT_FAILURE);
     }
         

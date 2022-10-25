@@ -29,7 +29,7 @@ WARNINGS			:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith \
 # - address sanitizer requires libasan (-fsanitize=address)
 # - sanitizer for undefined behaviour requires libubsan (-fsanitize=undefined)
 # (this causes issues with gcc on mingw, maybe use clang on windows instead) 
-CFLAGS				:= -g -O2 -I$(DIR_INCLUDE) $(WARNINGS)
+CFLAGS				:= -g -O2 -DDEBUG -I$(DIR_INCLUDE) $(WARNINGS)
 #					   -fsanitize=leak -fsanitize=address\
 #					   -fsanitize=null -fsanitize=undefined
 

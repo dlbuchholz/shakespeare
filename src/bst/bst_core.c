@@ -8,15 +8,17 @@
 //       Autor: Dennis Lucas Buchholz                                         //
 ////////////////////////////////////////////////////////////////////////////////
 #include <bst/core.h>
+#include <macros.h>
 
 Tree* tree_new (long max_tree_elements) {
     Tree* tree = (Tree *) malloc(sizeof(Tree));
-    // Reserves memory for the whole array of nodes
+    // Reserves memory for the whole pointerarray of nodes
     // Note: Calloc initializes all memory after allocating it
+    // Keeping track of all node references is good practice to avoid orphan
+    // nodes
     tree->nodes = calloc (max_tree_elements, sizeof(Node*));
     tree->root = 0;
     tree->node_len = 0;
-
     return tree;
 }
 
@@ -28,23 +30,6 @@ Node* new_node(const char* content, size_t content_len) {
     node->length = content_len;
     node->count = 1;
     return node;
-}
-
-Node* lookup(Node* root, const char* word, size_t word_len) {
-    if(!root) {
-        return NULL;
-    }
-
-    int length = root->length > word_len;
-
-    if(strcmp(root->content, word) == 0)
-        return root;
-    else if(length) 
-        return lookup(root->left, word, word_len);
-    else if (!length)
-        return lookup(root->right, word, word_len);
-
-    return NULL;
 }
 
 Node* node_insert(Node* parent, const char* content, size_t content_len) {
@@ -65,12 +50,15 @@ Node* node_insert(Node* parent, const char* content, size_t content_len) {
 }
 
 void node_destroy(Node* node) {
-    node_destroy(node->left);
-    node_destroy(node->right);
+    if(node->left)
+        node_destroy(node->left);
+    if(node->right)
+        node_destroy(node->right);
     free(node);
 }
 
 void tree_destroy(Tree* tree) {
+    DEBUG_PRINT(("DEBUG: Destroying tree: %p\n", &tree));
     node_destroy(tree->nodes[tree->root]);
     free(tree->nodes);
     free(tree);

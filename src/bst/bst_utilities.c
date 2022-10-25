@@ -25,9 +25,11 @@ void debug_print_node(Node* root, size_t node_len) {
     char **words = calloc(node_len, sizeof(char*));
     int index = 0;
     inorder_traversal(root, words, &index);
+    printf("DEBUG: Constructed tree:\n[");
     for(int i = 0; i < node_len; i++)
         printf("%s, ", words[i]);
-   free(words);
+    printf("]\n");
+    free(words);
 }
 
 void debug_print_node_2(Node* node, int level, char* position) {

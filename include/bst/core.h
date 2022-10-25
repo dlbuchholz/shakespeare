@@ -27,6 +27,5 @@ Node* new_node(const char* content, size_t content_len);
 Node* node_insert(Node* parent, const char* content, size_t content_len);
 void node_destroy(Node* node);
 void tree_destroy(Tree* tree);
-Node* lookup(Node* root, const char* word, size_t word_len);
 
 #endif

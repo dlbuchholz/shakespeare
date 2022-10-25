@@ -11,10 +11,11 @@
 
 Tree* tree_from_file(const char* fname) {
     FILE* file = fopen(fname, "r");
-    Tree *tree = tree_new(get_file_size(NULL, file));
     if(!file) {
+        fprintf(stderr, "Error: Unable to open file!");
         exit(EXIT_FAILURE);
     }
+    Tree *tree = tree_new(get_file_size(NULL, file));
 
     int c = getc(file);
 
