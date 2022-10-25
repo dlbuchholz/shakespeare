@@ -33,7 +33,7 @@ void debug_print_node(Node* root, size_t node_len) {
 }
 
 void debug_print_node_2(Node* node, int level, char* position) {
-    printf("{value:\"%s\", level: %d, position: %s}\n", node->content, level, position);
+    printf("{value:\"%s\", level: %d, position: %s next_char: %c},\n", node->content, level, position, node->next_char);
     if(node->left) {
         debug_print_node_2(node->left, level +1, "left");
     }
@@ -44,7 +44,7 @@ void debug_print_node_2(Node* node, int level, char* position) {
 
 void debug_print_tree(Tree* tree) {
     debug_print_node(tree->nodes[tree->root], tree->node_len);
-   // debug_print_node_2(tree->nodes[tree->root], 0, "root");
+    debug_print_node_2(tree->nodes[tree->root], 0, "root");
 }
 
 void print_tree(Tree* tree) {

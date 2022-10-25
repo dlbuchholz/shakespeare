@@ -6,7 +6,7 @@
 struct Match {
     int count;
     Node* node;
-    int char_pos;
+    int last_pos;
     char char_next;
 } typedef Match;
 

@@ -40,19 +40,20 @@ Node *lookup(Node *root, const char *word, size_t word_len)
 
 void find_matches(Node *root, const char *word, size_t word_len, Match matches[], int *index) {
     if (root->length >= word_len) {
-        if (strstr(root->content, word)) {
+        char* occurence = strstr(root->content, word);
+        if (occurence) {
             Match m;
             m.count = root->count;
             m.node = root;
-            m.char_pos = 0;
 
-            if (root->length == word_len)
+            if (root->length == word_len || ((occurence + word_len) - root->content == root->length))
             {
-                m.char_next = 'N';
+                m.char_next = root->next_char;
+                m.last_pos = 1;
             }
             else
             {
-                m.char_next = root->content[word_len];
+                m.char_next = root->content[(occurence + word_len) - root->content];
             }
 
             matches[(*index)++] = m;

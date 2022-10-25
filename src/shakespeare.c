@@ -30,7 +30,7 @@ void display_usage() {
 int main (int argc, char **argv) {
     char* file_name = "";
     int word_count = 1;
-    int output_length = 0;
+    int output_length = 30;
 
     int option;
     while((option = getopt(argc, argv, "f:sl")) != -1 ) {
@@ -56,10 +56,11 @@ int main (int argc, char **argv) {
     //Node* n = lookup(tree->nodes[tree->root], "Friedrich", strlen("Friedrich"));
 
     print_tree(tree);
-    generate_text(tree, "He", strlen("He"), output_length);
-
     #ifdef DEBUG
     debug_print_tree(tree);
     #endif
+    generate_text(tree, "Hell", strlen("Hell"), output_length);
+
+    
     tree_destroy(tree);
 }
