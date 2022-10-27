@@ -31,6 +31,8 @@ Node* new_node(const char* content, size_t content_len, char next_char) {
     node->length = content_len;
     node->count = 1;
     node->next_char = next_char;
+    //node->next_state = calloc(10, sizeof(LinkedState*));
+   // node->state_len = 0;
     return node;
 }
 
@@ -50,6 +52,27 @@ Node* node_insert(Node* parent, const char* content, size_t content_len, char ne
 
     return parent;
 }
+/*
+Node* append_state(Node* parent, Node* child) {
+    int found = 0;
+    for(int i = 0; i < parent->state_len - 1; i++) {
+        if(parent->next_state[i]->node == child) {
+            found = i;
+        }
+    }
+
+    if(!found) {
+        LinkedState* l;
+        l->node = child;
+        l->count = 1;
+        parent->next_state[parent->state_len] = l;
+        parent->state_len++;
+    } else {
+        parent->next_state[found]->count++;
+    }
+
+    return child;
+}*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Garbage collection                                                         //
@@ -70,7 +93,7 @@ void tree_destroy(Tree* tree) {
     node_destroy(tree->nodes[tree->root]);
 
     // Check for possible orphan nodes, destroy them if found
-    for(int i = 0; i < tree->node_len; i++) {
+    for(int i = 0; i < tree->node_len - 1; i++) {
         if(tree->nodes[i]) {
             DEBUG_PRINT(("DEBUG: Destroying orphan node: %s\n", tree->nodes[i]->content));
             node_destroy(tree->nodes[i]);

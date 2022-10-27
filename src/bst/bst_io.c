@@ -20,7 +20,6 @@ Tree* tree_from_file(const char* fname) {
 
     int c = getc(file);
     int found_word = 0;
-    int carry_over_char = 0;
 
     // Save length of each word while reading the file to avoid using
     // strlen() for the rest of the program.
@@ -33,6 +32,7 @@ Tree* tree_from_file(const char* fname) {
             found_word = 1;
         } else {
             if(found_word) {
+                //root = append_state(root, node_insert(root, buffer, len));
                 root = node_insert(root, buffer, len, (char) c);
                 tree->nodes[tree->node_len++] = root;
                 memset(buffer, 0, 100);

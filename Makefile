@@ -49,4 +49,5 @@ run-windows: shakespeare
 .PHONY: clean
 
 clean:
-	rm -f $(DIR_OBJ)/*.o *~ core $(INCDIR)/*~ 
+	rm -f $(DIR_OBJ)/*.o *~ core $(INCDIR)/*~
+	rm -f $(DIR_OBJ)/bst/*.o *~ core $(INCDIR)/*~

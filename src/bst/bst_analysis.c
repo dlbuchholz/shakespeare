@@ -38,13 +38,15 @@ Node *lookup(Node *root, const char *word, size_t word_len)
     return NULL;
 }
 
-void find_matches(Node *root, const char *word, size_t word_len, Match matches[], int *index) {
+void find_exact_matches(Node *root, const char *word, size_t word_len, Match matches[], int *index) {
     if (root->length >= word_len) {
         char* occurence = strstr(root->content, word);
-        if (occurence) {
+        if (!!occurence) {
+           // printf("{{%s}}%d", word, *index);
             Match m;
             m.count = root->count;
             m.node = root;
+            m.last_pos = 0;
 
             if (root->length == word_len || ((occurence + word_len) - root->content == root->length))
             {
@@ -61,7 +63,7 @@ void find_matches(Node *root, const char *word, size_t word_len, Match matches[]
     }
 
     if (root->left)
-        find_matches(root->left, word, word_len, matches, index);
+        find_exact_matches(root->left, word, word_len, matches, index);
     if (root->right)
-        find_matches(root->right, word, word_len, matches, index);
+        find_exact_matches(root->right, word, word_len, matches, index);
 }
