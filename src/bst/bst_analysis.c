@@ -26,13 +26,13 @@ Node *lookup(Node *root, const char *word, size_t word_len)
         return NULL;
     }
 
-    int length = root->length > word_len;
+    int length = strncmp(root->content, word, word_len);
 
-    if (strcmp(root->content, word) == 0)
+    if (length == 0)
         return root;
-    else if (length)
+    else if (length < 0)
         return lookup(root->left, word, word_len);
-    else if (!length)
+    else if (length > 0)
         return lookup(root->right, word, word_len);
 
     return NULL;
@@ -50,12 +50,12 @@ void find_exact_matches(Node *root, const char *word, size_t word_len, Match mat
 
             if (root->length == word_len || ((occurence + word_len) - root->content == root->length))
             {
-                m.char_next = root->next_char;
+               // m.char_next = root->next_char;
                 m.last_pos = 1;
             }
             else
             {
-                m.char_next = root->content[(occurence + word_len) - root->content];
+               // m.char_next = root->content[(occurence + word_len) - root->content];
             }
 
             matches[(*index)++] = m;

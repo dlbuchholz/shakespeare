@@ -7,7 +7,13 @@
 #include <string.h>
 
 typedef struct Node Node;
-typedef struct LinkedState LinkedState;
+typedef struct NextState NextState;
+
+struct NextState {
+    char character;
+    int frequency;
+    float probability;
+};
 
 struct Node {
     char* content;
@@ -15,17 +21,11 @@ struct Node {
     Node* right;
     int length;
     int count;
-    char next_char;
-  //  LinkedState** next_state;
-//    int state_len;
+    int sum_of_frequencies;
+    NextState* next_state;
+    int state_len;
 };
-/*
-struct LinkedState {
-    Node* node;
-    int count;
-    int probability;
-};
-*/
+
 struct Tree {
     Node** nodes;
     long root;
@@ -33,9 +33,11 @@ struct Tree {
 } typedef Tree;
 
 Tree* tree_new (long max_tree_elements);
-Node* new_node(const char* content, size_t content_len, char next_chart);
-Node* node_insert(Node* parent, const char* content, size_t content_len, char next_char);
+Node* new_node(const char* content, size_t content_len);
+Node* node_insert(Node* parent, const char* content, size_t content_len);
 void node_destroy(Node* node);
 void tree_destroy(Tree* tree);
+void append_state(Node* parent, char c);
+void calculate_probabilites(Node* root);
 
 #endif

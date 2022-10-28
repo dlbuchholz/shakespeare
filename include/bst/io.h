@@ -3,5 +3,5 @@
 #include <bst/core.h>
 #include <stdio.h>
 
-Tree* tree_from_file(const char* fname);
+Tree* tree_from_file(const char* fname, int input_length);
 #endif

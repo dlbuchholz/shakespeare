@@ -9,8 +9,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <bst/io.h>
 #include <macros.h>
+#include <markov.h>
 
-Tree* tree_from_file(const char* fname) {
+Tree* tree_from_file(const char* fname, int input_length) {
     FILE* file = fopen(fname, "r");
     if(!file) {
         fprintf(stderr, "Error: Unable to open file!");
@@ -23,31 +24,26 @@ Tree* tree_from_file(const char* fname) {
 
     // Save length of each word while reading the file to avoid using
     // strlen() for the rest of the program.
-    int len = 0;
-    char buffer[100] = "";
+    int len = 1;
+    char buffer[5] = "";
     Node* root = NULL;
 
     while(c != EOF) {
-        if(c == ' ' || c == '\n') {
-            found_word = 1;
+        strncat(buffer, &c, 1);
+
+        if(len == input_length+1) {
+            root = node_insert(root, buffer, len);
+            tree->nodes[tree->node_len++] = root;
+            shift_string(buffer, len);
         } else {
-            if(found_word) {
-                //root = append_state(root, node_insert(root, buffer, len));
-                root = node_insert(root, buffer, len, (char) c);
-                tree->nodes[tree->node_len++] = root;
-                memset(buffer, 0, 100);
-                len = 0;
-                found_word = 0;
-            }
-            strncat(buffer, &c, 1);
             len++;
         }
 
-        c = getc(file);
+         c = getc(file);
     }
 
     fclose(file);
-
+    calculate_probabilities(tree->nodes[tree->root]);
     tree->nodes = realloc(tree->nodes, tree->node_len * sizeof(Node*));
 
     return tree;

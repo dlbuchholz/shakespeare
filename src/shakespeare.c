@@ -30,17 +30,17 @@ void display_usage() {
 int main (int argc, char **argv) {
     char* file_name = "";
     int word_count = 1;
-    int output_length = 30;
+    int output_length = 6000;
 
     int option;
     while((option = getopt(argc, argv, "f:sl")) != -1 ) {
         switch (option) {
             break;
             case 'l':
-            output_length = optarg; 
+            output_length = atoi(optarg);
             break;
             case 's':
-            word_count = optarg;
+            word_count = atoi(optarg);
             break;
             case 'f':
             if (access(optarg, F_OK) == 0 )
@@ -52,14 +52,13 @@ int main (int argc, char **argv) {
         }
     }
 
-    Tree* tree = tree_from_file(file_name);
-    //Node* n = lookup(tree->nodes[tree->root], "Friedrich", strlen("Friedrich"));
+    Tree* tree = tree_from_file(file_name, strlen("Friedrich"));
 
-    print_tree(tree);
+    //print_tree(tree);
     #ifdef DEBUG
-    debug_print_tree(tree);
+    //debug_print_tree(tree);
     #endif
-    generate_text(tree, "Hell", strlen("Hell"), output_length);
+    generate_text(tree, "Friedrich", strlen("Friedrich"), output_length);
 
     
     tree_destroy(tree);

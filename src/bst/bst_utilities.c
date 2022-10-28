@@ -33,7 +33,13 @@ void debug_print_node(Node* root, size_t node_len) {
 }
 
 void debug_print_node_2(Node* node, int level, char* position) {
-    printf("{value:\"%s\", level: %d, position: %s next_char: %c},\n", node->content, level, position, node->next_char);
+    printf("{value:\"%s\", level: %d, position: %s next_char: [ ", node->content, level, position);
+    printf("%d", node->state_len);
+    for(int i = 0; i < node->state_len; i++) {
+        printf("{'%c', frequency: %f},", node->next_state[i].character, node->next_state[i].probability);
+    }
+    printf("},\n");
+
     if(node->left) {
         debug_print_node_2(node->left, level +1, "left");
     }

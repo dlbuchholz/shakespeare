@@ -23,56 +23,74 @@ Tree* tree_new (long max_tree_elements) {
     return tree;
 }
 
-Node* new_node(const char* content, size_t content_len, char next_char) {
+Node* new_node(const char* content, size_t content_len) {
     Node* node = (Node *) malloc(sizeof(Node));
     node->content = strdup(content);
+    node->content[content_len-1] = '\0';
     node->left = NULL;
     node->right = NULL;
     node->length = content_len;
     node->count = 1;
-    node->next_char = next_char;
-    //node->next_state = calloc(10, sizeof(LinkedState*));
-   // node->state_len = 0;
+    node->next_state = calloc(52, sizeof(NextState));
+    node->state_len = 0;
     return node;
 }
 
-Node* node_insert(Node* parent, const char* content, size_t content_len, char next_char) {
-    if(parent == NULL)
-        return new_node(content, content_len, next_char);
+Node* node_insert(Node* parent, const char* content, size_t content_len) {
+    if(parent == NULL) {
+        Node* n = new_node(content, content_len);
+        append_state(n, content[content_len-1]);
+        return n;
+    }
 
-    int length = parent->length > content_len;
+    // Only compare the first 4 characters
+    int length = strncmp(parent->content, content, content_len - 1);
 
-    if(strcmp(parent->content, content) == 0) {
+    if (length == 0) {
+        append_state(parent, content[content_len-1]);
         parent->count++;
         return parent;
-    } else if(length)
-        parent->left = node_insert(parent->left, content, content_len, next_char);
-    else if (!length)
-        parent->right = node_insert(parent->right, content, content_len, next_char);
+    } else if(length < 0)
+        parent->left = node_insert(parent->left, content, content_len);
+    else if (length > 0)
+        parent->right = node_insert(parent->right, content, content_len);
 
     return parent;
 }
-/*
-Node* append_state(Node* parent, Node* child) {
-    int found = 0;
-    for(int i = 0; i < parent->state_len - 1; i++) {
-        if(parent->next_state[i]->node == child) {
-            found = i;
+
+void append_state(Node* parent, char c) {
+    int found = -1;
+    for(int i = 1; i < parent->state_len; i++) {
+        if(parent->next_state[i-1].character == c) {
+            found = i-1;
         }
     }
 
-    if(!found) {
-        LinkedState* l;
-        l->node = child;
-        l->count = 1;
-        parent->next_state[parent->state_len] = l;
-        parent->state_len++;
+    if(found == -1) {
+        if(parent->state_len < 52) {
+            NextState l;
+            l.character = c;
+            l.frequency = 1;
+            l.probability = 0;
+            parent->next_state[parent->state_len++] = l;
+            parent->sum_of_frequencies++;
+        }
     } else {
-        parent->next_state[found]->count++;
+        parent->next_state[found].frequency++;
+        parent->sum_of_frequencies++;
+    }
+}
+
+void calculate_probabilities(Node* root) {
+    for(int i = 0; i < root->state_len; i++) {
+        root->next_state[i].probability = (float) root->next_state[i].frequency / root->sum_of_frequencies;
     }
 
-    return child;
-}*/
+    if(root->left)
+        calculate_probabilities(root->left);
+    if(root->right)
+        calculate_probabilities(root->right);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Garbage collection                                                         //
