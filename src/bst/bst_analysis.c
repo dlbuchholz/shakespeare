@@ -9,16 +9,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <bst/analysis.h>
 
-void inorder_traversal(Node *root, char **output, int *index)
-{
-    if (root != NULL)
-    {
-        inorder_traversal(root->left, output, index);
-        output[(*index)++] = strdup(root->content);
-        inorder_traversal(root->right, output, index);
-    }
-}
-
 Node *lookup(Node *root, const char *word, size_t word_len)
 {
     if (!root)
@@ -36,34 +26,4 @@ Node *lookup(Node *root, const char *word, size_t word_len)
         return lookup(root->right, word, word_len);
 
     return NULL;
-}
-
-void find_exact_matches(Node *root, const char *word, size_t word_len, Match matches[], int *index) {
-    if (root->length >= word_len) {
-        char* occurence = strstr(root->content, word);
-        if (!!occurence) {
-           // printf("{{%s}}%d", word, *index);
-            Match m;
-            m.count = root->count;
-            m.node = root;
-            m.last_pos = 0;
-
-            if (root->length == word_len || ((occurence + word_len) - root->content == root->length))
-            {
-               // m.char_next = root->next_char;
-                m.last_pos = 1;
-            }
-            else
-            {
-               // m.char_next = root->content[(occurence + word_len) - root->content];
-            }
-
-            matches[(*index)++] = m;
-        }
-    }
-
-    if (root->left)
-        find_exact_matches(root->left, word, word_len, matches, index);
-    if (root->right)
-        find_exact_matches(root->right, word, word_len, matches, index);
 }

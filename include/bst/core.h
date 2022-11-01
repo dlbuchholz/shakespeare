@@ -1,43 +1,42 @@
 #ifndef BST_CORE_H_
 #define BST_CORE_H_
 
-#include <fileio.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 typedef struct Node Node;
 typedef struct NextState NextState;
+typedef struct Tree Tree;
 
 struct NextState {
     char character;
     int frequency;
-    float probability;
+    double probability;
 };
 
 struct Node {
     char* content;
     Node* left;
     Node* right;
-    int length;
-    int count;
+    size_t length;
     int sum_of_frequencies;
     NextState* next_state;
-    int state_len;
+    size_t state_len;
 };
 
 struct Tree {
     Node** nodes;
     long root;
     size_t node_len;
-} typedef Tree;
+};
 
-Tree* tree_new (long max_tree_elements);
+Tree* tree_new (size_t max_tree_elements);
 Node* new_node(const char* content, size_t content_len);
 Node* node_insert(Node* parent, const char* content, size_t content_len);
 void node_destroy(Node* node);
 void tree_destroy(Tree* tree);
-void append_state(Node* parent, char c);
-void calculate_probabilites(Node* root);
+void append_transition_state(Node* parent, char c);
+void realloc_node(Node* root);
 
 #endif

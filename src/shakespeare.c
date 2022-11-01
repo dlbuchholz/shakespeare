@@ -10,15 +10,15 @@
 //       Autor: Dennis Lucas Buchholz                                         //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <bst/io.h>
+#include <argparsing.h>
 #include <bst/utilities.h>
+#include <file_io.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <fileio.h>
 #include <macros.h>
-#include <markov.h>
+#include <markov/model.h>
+#include <shakespeare.h>
 
-void display_usage() {
+void display_usage(void) {
     printf("Usage: shakespeare [options] [-f file]\n");
     printf("Options:\n");
     printf(" -f     Input file\n");
@@ -28,38 +28,32 @@ void display_usage() {
 }
 
 int main (int argc, char **argv) {
-    char* file_name = "";
-    int word_count = 1;
-    int output_length = 6000;
+    char* file_name = malloc(sizeof(char) * 256);
+    size_t output_length = 0;
+    size_t input_length = 1;
+    parse_arguments(argc, argv, file_name, &input_length, &output_length);
 
-    int option;
-    while((option = getopt(argc, argv, "f:sl")) != -1 ) {
-        switch (option) {
-            break;
-            case 'l':
-            output_length = atoi(optarg);
-            break;
-            case 's':
-            word_count = atoi(optarg);
-            break;
-            case 'f':
-            if (access(optarg, F_OK) == 0 )
-                file_name = optarg;
-            else {
-                fprintf(stderr, "Error: Unable to access file!");
-                exit(EXIT_FAILURE);
-            }
-        }
+    FILE* file = fopen(file_name, "r");
+    if(!file) {
+        fprintf(stderr, "Error: Unable to open file!");
+        exit(EXIT_FAILURE);
     }
 
-    Tree* tree = tree_from_file(file_name, strlen("Friedrich"));
+    char* first_chars = malloc(sizeof(char) * (input_length+1));
+    file_into_buffer(input_length, file, first_chars);
+    first_chars[input_length] = '\0';
+
+    MarkovModel* model = model_new(file, input_length, output_length);
+    fclose(file);
+    free(file_name);
 
     //print_tree(tree);
     #ifdef DEBUG
     //debug_print_tree(tree);
     #endif
-    generate_text(tree, "Friedrich", strlen("Friedrich"), output_length);
+    generate_text(model, first_chars);
 
-    
-    tree_destroy(tree);
+    tree_destroy(model->tree);
+    free(first_chars);
+    free(model);
 }
