@@ -79,8 +79,6 @@ char next_letter(MarkovModel *state)
         fprintf(stderr, "Error: Unable to predict '%s'", state->search_string);
         exit(EXIT_FAILURE);
     }
-
-    srand((unsigned int) time(0));
     return n->next_state[weighted_random(n->next_state, (int) n->state_len)].character;
 }
 
@@ -88,6 +86,7 @@ void generate_text(MarkovModel *model, char *search_string)
 {
     model->search_string = search_string;
     char last_letter;
+    srand((unsigned int) time(NULL));
 
     printf("<%s>", model->search_string);
 

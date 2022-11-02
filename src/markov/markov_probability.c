@@ -33,6 +33,6 @@ int weighted_random(NextState *p, int n)
 {
 	double s = rand() / (RAND_MAX + 1.0);
 	int i;
-	for (i = 0; i < n - 1 && (s -= p[i].probability) >= 0; i++);
+	for (i = 0; i < n - 1 && ((s -= p[i].probability) >= 0); i++);
 	return i;
 }
