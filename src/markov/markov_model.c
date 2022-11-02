@@ -24,8 +24,7 @@ Tree* tree_from_file(FILE* file, size_t input_length, size_t* output_length) {
         strncat(buffer, (char*) &c, 1);
 
         if(len == input_length+1) {
-            root = node_insert(root, buffer, len);
-            tree->nodes[tree->node_len++] = root;
+            root = node_insert(root, buffer, len, tree);
             shift_string(buffer, (int) len);
         } else {
             len++;
@@ -57,6 +56,12 @@ MarkovModel* model_new(FILE* file, size_t input_length, size_t output_length) {
     model->output_length = output_length;
 
     return model;
+}
+
+void model_destroy(MarkovModel* model) {
+    tree_destroy(model->tree);
+    free(model->search_string);
+    free(model);
 }
 
 void shift_string(char *words, int len)

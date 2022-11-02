@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// linked_list.c                                                              //
-//                                                                            //
-// Dieser Quellcode beinhaltet die Implementation einer verketteten Liste,    //
-// welche Namen enthält.                                                      //
-//                                                                            //
-// Erstellt am: 19.10.2022                                                    //
-//       Autor: Dennis Lucas Buchholz                                         //
-////////////////////////////////////////////////////////////////////////////////
 #include <bst/utilities.h>
 
 void debug_print_node(Node* node, int level, const char* position) {

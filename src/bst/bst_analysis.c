@@ -1,14 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////
-// linked_list.c                                                              //
-//                                                                            //
-// Dieser Quellcode beinhaltet die Implementation einer verketteten Liste,    //
-// welche Namen enthält.                                                      //
-//                                                                            //
-// Erstellt am: 19.10.2022                                                    //
-//       Autor: Dennis Lucas Buchholz                                         //
-////////////////////////////////////////////////////////////////////////////////
 #include <bst/analysis.h>
 
+/* Function: lookup
+ * ----------------
+ * Search for a word match in the binary search tree using preorder traversal,
+ * return the corresponding node if found.
+ *
+ * root     | pointer to the root node
+ * word     | string to be searched within the tree
+ * word_len | length of the search string
+ */
 Node *lookup(Node *root, const char *word, size_t word_len)
 {
     if (!root)

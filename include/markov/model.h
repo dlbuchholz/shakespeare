@@ -17,5 +17,6 @@ MarkovModel* model_new(FILE* file, size_t input_length, size_t output_length);
 void generate_text(MarkovModel *model, char *search_string);
 char next_letter(MarkovModel *state);
 void shift_string(char *words, int len);
+void model_destroy(MarkovModel* model);
 
 #endif
