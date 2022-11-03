@@ -179,12 +179,12 @@ void tree_destroy(Tree* tree) {
     node_destroy(tree->nodes[tree->root]);
 
     /* Check for possible orphan nodes, destroy them if found */ 
-    for(int i = 0; i < (int) tree->node_len - 1; i++) {
+    /*for(int i = 0; i < (int) tree->node_len - 1; i++) {
         if(tree->nodes[i] != NULL) {
-            DEBUG_PRINT(("DEBUG: Destroying orphan node: %s\n", tree->nodes[i]->content));
+            DEBUG_PRINT(("DEBUG: Destroying orphan node: %p\n", (void*) tree->nodes[i]));
             node_destroy(tree->nodes[i]);
         }
-    }
+    }*/
 
     free(tree->nodes);
     free(tree);

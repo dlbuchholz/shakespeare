@@ -21,18 +21,20 @@ void calculate_probabilities(Node* root) {
 }
 
 
-/* Function: weight_random
- * -----------------------
- * Return the index of a character in the set. This index is chosen randomly
- * but the weight is based on the character's probability.
+/* Function: weighted_random
+ * -------------------------
+ * Pick and return a random index of a character in the set (from 0 to n-1).
+ * This index is chosen randomly but based on the weight of a character's
+ * probability (p[i].probability). The probability values of *p are assumed to
+ * have a sum of 1, thus the the probability values matter up to the point
+ * where the sum exceeds 1.
  *
- * p | pointer to an array of NextState (possible character)
+ * p | pointer to an array of NextState (next possible character)
  * n | length of the array 
  */
-int weighted_random(NextState *p, int n)
-{
-	double s = rand() / (RAND_MAX + 1.0);
-	int i;
-	for (i = 0; i < n - 1 && ((s -= p[i].probability) >= 0); i++);
-	return i;
+int weighted_random(NextState *p, int n) {
+    double s = rand() / (RAND_MAX + 1.0);
+    int i;
+    for (i = 0; i < n - 1 && ((s -= p[i].probability) >= 0); i++);
+    return i;
 }
