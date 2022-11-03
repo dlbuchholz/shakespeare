@@ -65,6 +65,10 @@ void parse_arguments(int argc, char **argv, char* file_name,
         }
     }
 
+    if(optind < argc)
+         if (access(argv[optind], F_OK) == 0 && (file_name[0] == '\0'))
+                strcpy(file_name, argv[optind]);
+
     /* Explicit type casts to make the compiler happy :) */
     *input_length = (size_t) i_len;
     *output_length = (size_t) o_len;

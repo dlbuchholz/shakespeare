@@ -56,6 +56,7 @@ MarkovModel* model_new(FILE* file, char* search_string, size_t input_length, siz
     model->tree = tree;
     model->search_length = input_length;
     model->output_length = output_length;
+    model->search_string = search_string;
 
     return model;
 }
@@ -83,8 +84,7 @@ char next_letter(MarkovModel *state) {
     return n->next_state[weighted_random(n->next_state, (int) n->state_len)].character;
 }
 
-void generate_text(MarkovModel *model, char *search_string) {
-    model->search_string = search_string;
+void generate_text(MarkovModel *model) {
     char last_letter;
     srand((unsigned int) time(NULL));
 

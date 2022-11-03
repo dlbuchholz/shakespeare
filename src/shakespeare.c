@@ -53,7 +53,7 @@ int main (int argc, char **argv) {
 #ifdef DEBUG
     //debug_print_tree(model->tree);
 #endif
-    generate_text(model, search_string);
+    generate_text(model);
     model_destroy(model);
 }
 
