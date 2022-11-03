@@ -17,5 +17,5 @@ void debug_print_node(Node* node, int level, const char* position) {
 }
 
 void debug_print_tree(Tree* tree) {
-    debug_print_node(tree->nodes[tree->root], 0, "root");
+    debug_print_node(tree->root, 0, "root");
 }

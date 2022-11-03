@@ -8,7 +8,6 @@
 
 #include <argparsing.h>
 #include <bst/utilities.h>
-#include <file_io.h>
 #include <stdio.h>
 #include <macros.h>
 #include <markov/model.h>
@@ -22,11 +21,12 @@
  * argv | pointer to an array of program arguments
  */
 int main (int argc, char **argv) {
-
+    FILE* file = stdin;
     /* Maximum length of a filename is 255 characters
      * (+1 character for null-terminator) */
     char* file_name = malloc(sizeof(char) * 256);
     /*                 ^^^^ gets freed in line 38 */
+    file_name[0] = '\0';
 
     /* No need to initialize variables since they get initialized in
      *  parse_arguments() */
@@ -34,22 +34,20 @@ int main (int argc, char **argv) {
 
     parse_arguments(argc, argv, file_name, &input_length, &output_length);
 
-    FILE* file = fopen(file_name, "r");
-    free(file_name);
-    if(!file) {
-        fprintf(stderr, "Error: Unable to open file!");
-        exit(EXIT_FAILURE);
+    if(file_name[0] != '\0') {
+        file = fopen(file_name, "r");
+        FREE_IF_EXISTS(file_name);
+        if(!file)
+            graceful_exit("Error: Could not read file");
     }
-
 
     /* Reserve memory location for `search string`
      * It's size is the specificed input size + 1 (for null-terminator) */
-    char* search_string = malloc(sizeof(char) * (input_length + 1));
+    char* search_string = calloc((input_length + 1), sizeof(char));
     /*                     ^^^^ gets freed in model_destroy */
+    search_string[input_length+1] = '\0';
 
-    file_into_buffer(input_length, file, search_string);
-
-    MarkovModel* model = model_new(file, input_length, output_length);
+    MarkovModel* model = model_new(file, search_string, input_length, output_length);
     fclose(file);
 
 #ifdef DEBUG
@@ -70,4 +68,13 @@ void display_usage(void) {
     printf(" -l     Output length\n");
     printf(" -s     Length of input string\n");
     printf(" -h     Print help page\n");
+}
+
+void graceful_exit(const char* error_message) {
+    if(error_message)
+        fprintf(stderr, error_message);
+    else
+        display_usage();
+
+    exit(EXIT_FAILURE);
 }

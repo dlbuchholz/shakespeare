@@ -26,12 +26,11 @@ struct Node {
 };
 
 struct Tree {
-    Node** nodes;
-    long root;
+    Node* root;
     size_t node_len;
 };
 
-Tree* tree_new (size_t max_tree_elements);
+Tree* tree_new (void);
 Node* new_node(const char* content, size_t content_len);
 Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* tree);
 void node_destroy(Node* node);

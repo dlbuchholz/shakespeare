@@ -12,8 +12,8 @@ struct MarkovModel {
     Tree* tree;
 };
 
-Tree* tree_from_file(FILE* file, size_t input_length, size_t* output_length);
-MarkovModel* model_new(FILE* file, size_t input_length, size_t output_length);
+Tree* tree_from_file(FILE* file, char* search_string, size_t input_length, size_t* output_length);
+MarkovModel* model_new(FILE* file, char* search_string, size_t input_length, size_t output_length);
 void generate_text(MarkovModel *model, char *search_string);
 char next_letter(MarkovModel *state);
 void shift_string(char *words, int len);

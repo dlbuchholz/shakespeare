@@ -12,21 +12,11 @@
  * Declare a new tree, allocate memory for it on the heap and initialize it
  * according to the parameters, then return it.
  *
- * max_tree_elements | maximum amount of elements to be allocated on the heap
  */
-Tree* tree_new (size_t max_tree_elements) {
+Tree* tree_new() {
     Tree* tree = (Tree *) malloc(sizeof(Tree));
     /*                     ^^^^ gets freed in tree_destroy() */
-
-    /* Reserves memory for whole array of node adresses (Keeping track of all
-     * node references is good practice to avoid orphan nodes and thus memory
-     * leaks).
-     *
-     * Calloc instead of malloc used here because calloc initializes all memory
-     * after allocating it (i.e. fills it with zeroes). */
-    tree->nodes = calloc (max_tree_elements, sizeof(Node*));
-    /*             ^^^^ gets freed in tree_destroy() */
-    tree->root = 0;
+    tree->root = NULL;
     tree->node_len = 0;
     return tree;
 }
@@ -70,7 +60,9 @@ Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* t
     if(parent == NULL) {
         Node* n = new_node(content, content_len);
         append_transition_state(n, content[content_len-1]);
-        tree->nodes[tree->node_len++] = n;
+        if(tree->root == NULL)
+            tree->root = n;
+        tree->node_len++;
         return n;
     }
 
@@ -168,8 +160,7 @@ void node_destroy(Node* node) {
 /* Function: tree_destroy
  * ----------------------
  * Frees all of the memory allocated on the heap used for nodes by calling
- * node_destroy() on the root node. The internal nodes array get iterated as
- * well to free any orphan nodes that did not get freed by node_destroy()
+ * node_destroy() on the root node.
  *
  * tree | pointer to a tree
  */
@@ -177,16 +168,7 @@ void tree_destroy(Tree* tree) {
     DEBUG_PRINT(("DEBUG: Destroying tree: %p\n", (void*) tree));
 
     /* Destroy all nodes recursively */
-    node_destroy(tree->nodes[tree->root]);
+    node_destroy(tree->root);
 
-    /* Check for possible orphan nodes, destroy them if found */
-    /*for(int i = 0; i < (int) tree->node_len - 1; i++) {
-        if(tree->nodes[i] != NULL) {
-            DEBUG_PRINT(("DEBUG: Destroying orphan node: %p\n", (void*) tree->nodes[i]));
-            node_destroy(tree->nodes[i]);
-        }
-    }*/
-
-    free(tree->nodes);
     free(tree);
 }

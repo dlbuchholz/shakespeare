@@ -1,4 +1,6 @@
 #include <argparsing.h>
+#include <macros.h>
+#include <shakespeare.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -36,25 +38,29 @@ void parse_arguments(int argc, char **argv, char* file_name,
         switch (option) {
         case 'l':
             if(sscanf(optarg, "%u", &o_len) != 1) {
-                fprintf(stderr, "Error: Invalid output length");
-                exit(EXIT_FAILURE);
+                FREE_IF_EXISTS(file_name);
+                graceful_exit("Error: Invalid output length");
             }
             break;
 
         case 's':
             if(sscanf(optarg, "%u", &i_len) != 1) {
-                fprintf(stderr, "Error: Invalid input length");
-                exit(EXIT_FAILURE);
+                FREE_IF_EXISTS(file_name);
+                graceful_exit("Error: Invalid input length");
             }
             break;
 
         case 'f':
-            if (access(optarg, F_OK) == 0 && (file_name != NULL))
+            if (access(optarg, F_OK) == 0 && (file_name[0] == '\0'))
                 strcpy(file_name, optarg);
             else {
-                fprintf(stderr, "Error: Unable to access file!");
-                exit(EXIT_FAILURE);
+                FREE_IF_EXISTS(file_name);
+                graceful_exit("Error: Unable to access file!");
             }
+            break;
+        case 'h':
+            FREE_IF_EXISTS(file_name);
+            graceful_exit(NULL);
             break;
         }
     }

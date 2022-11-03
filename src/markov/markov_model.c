@@ -1,54 +1,56 @@
 #include <bst/analysis.h>
-#include <file_io.h>
 #include <macros.h>
 #include <markov/model.h>
 #include <markov/probability.h>
+#include <shakespeare.h>
 #include <time.h>
 
-Tree* tree_from_file(FILE* file, size_t input_length, size_t* output_length) {
+Tree* tree_from_file(FILE* file, char* search_string, size_t input_length, size_t* output_length) {
 
-    size_t file_size = get_file_size(file);
-    Tree *tree = tree_new(file_size);
+    Tree *tree = tree_new();
 
-    if(*output_length == 0) {
-        *output_length = file_size;
-    }
+    size_t buffer_len = 1;
+    size_t search_string_len = 0;
+    size_t counter = 0;
+    /* +2 bytes because: byte for extra character + null terminator) */
+    char* buffer = calloc(input_length + 2, sizeof(char));
+    Node* root = NULL;
 
     int c = getc(file);
-
-    size_t len = 1;
-    char buffer[5] = "";
-    Node* root = NULL;
 
     while(c != EOF) {
         strncat(buffer, (char*) &c, 1);
 
-        if(len == input_length+1) {
-            root = node_insert(root, buffer, len, tree);
-            shift_string(buffer, (int) len);
-        } else {
-            len++;
-        }
+        if(search_string_len < input_length)
+            search_string[search_string_len++] = (char) c;
 
+        if(buffer_len == input_length+1) {
+            root = node_insert(root, buffer, buffer_len, tree);
+            shift_string(buffer, (int) buffer_len);
+        } else {
+            buffer_len++;
+        }
+        counter++;
         c = getc(file);
     }
-    fseek(file, 0, SEEK_SET);
+
+     if(*output_length == 0)
+        *output_length = counter;
+
+    FREE_IF_EXISTS(buffer);
     return tree;
 }
 
-MarkovModel* model_new(FILE* file, size_t input_length, size_t output_length) {
+MarkovModel* model_new(FILE* file, char* search_string, size_t input_length, size_t output_length) {
 
-    Tree* tree = tree_from_file(file, input_length, &output_length);
+    Tree* tree = tree_from_file(file, search_string, input_length, &output_length);
     if(!tree) {
-        fprintf(stderr, "Error: Unable to generate binary search tree");
-        exit(EXIT_FAILURE);
+        FREE_IF_EXISTS(search_string);
+        graceful_exit("Error: Unable to generate binary search tree");
     }
 
-    calculate_probabilities(tree->nodes[tree->root]);
-    // Shrink allocated memory space for the binary search tree to the size
-    // that the nodes actually use
-    tree->nodes = realloc(tree->nodes, tree->node_len * sizeof(Node*));
-    realloc_node(tree->nodes[tree->root]);
+    calculate_probabilities(tree->root);
+    realloc_node(tree->root);
 
     MarkovModel* model = malloc(sizeof(MarkovModel));
     model->tree = tree;
@@ -72,9 +74,10 @@ void shift_string(char *words, int len) {
 }
 
 char next_letter(MarkovModel *state) {
-    Node* n = lookup(state->tree->nodes[state->tree->root], state->search_string, state->search_length);
+    Node* n = lookup(state->tree->root, state->search_string, state->search_length);
     if(!n) {
-        fprintf(stderr, "Error: Unable to predict '%s'", state->search_string);
+        model_destroy(state);
+        fprintf(stderr, "Error: Unable to make prediction for search string '%s'", state->search_string);
         exit(EXIT_FAILURE);
     }
     return n->next_state[weighted_random(n->next_state, (int) n->state_len)].character;
