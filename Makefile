@@ -31,6 +31,10 @@ CFLAGS				:= -g -O2 -pedantic -DDEBUG -I$(DIR_INCLUDE) $(WARNINGS)
 
 OBJ 				 = $(patsubst $(DIR_SRC)/%.c,$(DIR_OBJ)/%.o, $(DIR_SRCS))
 
+.DEFAULT_GOAL := all
+
+all: shakespeare doc/documentation.pdf
+
 shakespeare: $(OBJ)
 	mkdir -p obj
 	mkdir -p obj/bst
@@ -40,12 +44,14 @@ shakespeare: $(OBJ)
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c | $(DIR_OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-format:
-	$(shell astyle --style=google --recursive src/*.c --suffix=none )
-	$(shell astyle --style=google --recursive include/*.h  --suffix=none )
+doc/documentation.pdf:
+	texify --pdf --synctex=1 --clean doc/documentation.tex
+	mv documentation.pdf doc/
+	mv documentation.synctex.gz doc/
 
-run-windows: shakespeare
-	shakespeare.exe
+format:
+	astyle --suffix=none --style=google --recursive "src/*.c"
+	astyle --suffix=none --style=google --recursive "include/*.h"
 
 .PHONY: clean
 
@@ -53,3 +59,4 @@ clean:
 	rm -f $(DIR_OBJ)/*.o *~ core $(INCDIR)/*~
 	rm -f $(DIR_OBJ)/bst/*.o *~ core $(INCDIR)/*~
 	rm -f $(DIR_OBJ)/markov/*.o *~ core $(INCDIR)/*~
+	rm doc/*.pdf
