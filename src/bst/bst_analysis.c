@@ -9,10 +9,8 @@
  * word     | string to be searched within the tree
  * word_len | length of the search string
  */
-Node *lookup(Node *root, const char *word, size_t word_len)
-{
-    if (!root)
-    {
+Node *lookup(Node *root, const char *word, size_t word_len) {
+    if (!root) {
         return NULL;
     }
 

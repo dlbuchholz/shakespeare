@@ -8,14 +8,14 @@
 /* Function: parse_arguments
  * -------------------------
  * Parse the program's arguments using getopt()
- * 
+ *
  * INPUT:
  * argc          | amount of program arguments
  * argv          | pointer to an array of program arguments
  * file_name     | pointer to memory location of string
- * 
+ *
  * OUTPUT:
- * input_length  | pointer of input size 
+ * input_length  | pointer of input size
  * output_length | pointer of output size
  */
 void parse_arguments(int argc, char **argv, char* file_name,
@@ -30,25 +30,25 @@ void parse_arguments(int argc, char **argv, char* file_name,
      */
     unsigned int i_len = 1;
     unsigned int o_len = 0;
-    
+
     int option;
     while((option = getopt(argc, argv, "f:l:s:h")) != -1 ) {
         switch (option) {
-            case 'l':
+        case 'l':
             if(sscanf(optarg, "%u", &o_len) != 1) {
                 fprintf(stderr, "Error: Invalid output length");
                 exit(EXIT_FAILURE);
             }
             break;
 
-            case 's':
+        case 's':
             if(sscanf(optarg, "%u", &i_len) != 1) {
                 fprintf(stderr, "Error: Invalid input length");
                 exit(EXIT_FAILURE);
             }
             break;
-            
-            case 'f':
+
+        case 'f':
             if (access(optarg, F_OK) == 0 && (file_name != NULL))
                 strcpy(file_name, optarg);
             else {

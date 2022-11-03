@@ -34,7 +34,7 @@ Tree* tree_new (size_t max_tree_elements) {
 /* Function: new_node
  * ------------------
  * Declare a new node, allocate memory for it on the heap and initialize it
- * according to the parameters, then return it. 
+ * according to the parameters, then return it.
  *
  * content     | string to be saved in the node
  * content_len | length of the string
@@ -59,7 +59,7 @@ Node* new_node(const char* content, size_t content_len) {
 /* Function: node_insert
  * ---------------------
  * Inserts a node into a binary search tree. It's position is determined by a
- * lexicographic comparision with the existing nodes in the tree. 
+ * lexicographic comparision with the existing nodes in the tree.
  *
  * parent      | pointer to a higher-level node
  * content     | string to be saved in the node
@@ -79,7 +79,7 @@ Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* t
     int length = strncmp(parent->content, content, content_len - 1);
 
     if (length == 0) {
-	/* Save the last char as a possible following char for this node */
+        /* Save the last char as a possible following char for this node */
         append_transition_state(parent, content[content_len-1]);
         return parent;
     } else if(length < 0)
@@ -119,10 +119,10 @@ void realloc_node(Node* root) {
  */
 void append_transition_state(Node* parent, char c) {
 
-    /* If character gets found in set: found = id of element in array 
+    /* If character gets found in set: found = id of element in array
      * If character is not found in set: found = -1 */
     int found = -1;
-    
+
     for(int i = 1; i < (int) parent->state_len; i++) {
         if(parent->next_state[i-1].character == c) {
             found = i-1;
@@ -130,12 +130,13 @@ void append_transition_state(Node* parent, char c) {
     }
 
     if(found == -1) {
-	/* Only save character if the array has enough space left. */
+        /* Only save character if the array has enough space left. */
         if(parent->state_len < MAX_TRANSITION_CHARS) {
             NextState l = {
-            .character = c,
-            .frequency = 1,
-            .probability = 0 };
+                .character = c,
+                .frequency = 1,
+                .probability = 0
+            };
             parent->next_state[parent->state_len++] = l;
             parent->sum_of_frequencies++;
         }
@@ -160,7 +161,7 @@ void node_destroy(Node* node) {
     if(node->next_state != NULL)
         free(node->next_state);
     if(node->content != NULL)
-	    free(node->content);
+        free(node->content);
     free(node);
 }
 
@@ -178,7 +179,7 @@ void tree_destroy(Tree* tree) {
     /* Destroy all nodes recursively */
     node_destroy(tree->nodes[tree->root]);
 
-    /* Check for possible orphan nodes, destroy them if found */ 
+    /* Check for possible orphan nodes, destroy them if found */
     /*for(int i = 0; i < (int) tree->node_len - 1; i++) {
         if(tree->nodes[i] != NULL) {
             DEBUG_PRINT(("DEBUG: Destroying orphan node: %p\n", (void*) tree->nodes[i]));

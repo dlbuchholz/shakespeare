@@ -3,14 +3,14 @@
 /* Function: calculate_probabilities
  * ---------------------------------
  * Calculate the probability of every element in a set of characters following
- * each node. 
+ * each node.
  *
  * root | pointer to the the root node of the tree
  */
 void calculate_probabilities(Node* root) {
     for(int i = 0; i < (int) root->state_len; i++) {
-	/* probability of this char =
-	 * frequency of this char / frequencies of all chars in this set  */
+        /* probability of this char =
+         * frequency of this char / frequencies of all chars in this set  */
         root->next_state[i].probability = (double) root->next_state[i].frequency / root->sum_of_frequencies;
     }
 
@@ -30,7 +30,7 @@ void calculate_probabilities(Node* root) {
  * where the sum exceeds 1.
  *
  * p | pointer to an array of NextState (next possible character)
- * n | length of the array 
+ * n | length of the array
  */
 int weighted_random(NextState *p, int n) {
     double s = rand() / (RAND_MAX + 1.0);

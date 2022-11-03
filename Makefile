@@ -40,6 +40,10 @@ shakespeare: $(OBJ)
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c | $(DIR_OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+format:
+	$(shell astyle --style=google --recursive src/*.c --suffix=none )
+	$(shell astyle --style=google --recursive include/*.h  --suffix=none )
+
 run-windows: shakespeare
 	shakespeare.exe
 

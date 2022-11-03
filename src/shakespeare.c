@@ -1,9 +1,9 @@
-/* 
+/*
  * shakespeare.c
  *
  * Author: Dennis Lucas Buchholz
  * Date: 20.10.2022 - 01.11.2022
- * 
+ *
  */
 
 #include <argparsing.h>
@@ -17,7 +17,7 @@
 /* Function: main
  * --------------
  * The program's entry point.
- * 
+ *
  * argc | amount of program arguments
  * argv | pointer to an array of program arguments
  */
@@ -52,9 +52,9 @@ int main (int argc, char **argv) {
     MarkovModel* model = model_new(file, input_length, output_length);
     fclose(file);
 
-    #ifdef DEBUG
+#ifdef DEBUG
     //debug_print_tree(model->tree);
-    #endif
+#endif
     generate_text(model, search_string);
     model_destroy(model);
 }

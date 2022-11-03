@@ -6,7 +6,7 @@
 #include <time.h>
 
 Tree* tree_from_file(FILE* file, size_t input_length, size_t* output_length) {
-    
+
     size_t file_size = get_file_size(file);
     Tree *tree = tree_new(file_size);
 
@@ -15,7 +15,7 @@ Tree* tree_from_file(FILE* file, size_t input_length, size_t* output_length) {
     }
 
     int c = getc(file);
-    
+
     size_t len = 1;
     char buffer[5] = "";
     Node* root = NULL;
@@ -30,7 +30,7 @@ Tree* tree_from_file(FILE* file, size_t input_length, size_t* output_length) {
             len++;
         }
 
-         c = getc(file);
+        c = getc(file);
     }
     fseek(file, 0, SEEK_SET);
     return tree;
@@ -43,7 +43,7 @@ MarkovModel* model_new(FILE* file, size_t input_length, size_t output_length) {
         fprintf(stderr, "Error: Unable to generate binary search tree");
         exit(EXIT_FAILURE);
     }
-    
+
     calculate_probabilities(tree->nodes[tree->root]);
     // Shrink allocated memory space for the binary search tree to the size
     // that the nodes actually use
@@ -64,16 +64,14 @@ void model_destroy(MarkovModel* model) {
     free(model);
 }
 
-void shift_string(char *words, int len)
-{
+void shift_string(char *words, int len) {
     for (int i = 1; i < len; i++)
         words[i - 1] = words[i];
 
     words[len - 1] = '\0';
 }
 
-char next_letter(MarkovModel *state)
-{
+char next_letter(MarkovModel *state) {
     Node* n = lookup(state->tree->nodes[state->tree->root], state->search_string, state->search_length);
     if(!n) {
         fprintf(stderr, "Error: Unable to predict '%s'", state->search_string);
@@ -82,16 +80,14 @@ char next_letter(MarkovModel *state)
     return n->next_state[weighted_random(n->next_state, (int) n->state_len)].character;
 }
 
-void generate_text(MarkovModel *model, char *search_string)
-{
+void generate_text(MarkovModel *model, char *search_string) {
     model->search_string = search_string;
     char last_letter;
     srand((unsigned int) time(NULL));
 
     printf("<%s>", model->search_string);
 
-    for (int i = 0; i < (int) model->output_length; i++)
-    {
+    for (int i = 0; i < (int) model->output_length; i++) {
         last_letter = next_letter(model);
         printf("%c", last_letter);
         shift_string(model->search_string, (int) model->search_length);
