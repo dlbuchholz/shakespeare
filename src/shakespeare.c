@@ -51,7 +51,7 @@ int main (int argc, char **argv) {
     fclose(file);
 
 #ifdef DEBUG
-    //debug_print_tree(model->tree);
+    debug_print_tree(model->tree);
 #endif
     generate_text(model);
     model_destroy(model);

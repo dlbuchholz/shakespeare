@@ -39,10 +39,8 @@ Node* new_node(const char* content, size_t content_len) {
     node->left = NULL;
     node->right = NULL;
     node->length = content_len;
-    node->next_state = calloc(MAX_TRANSITION_CHARS, sizeof(NextState));
-    /*                  ^^^^ gets reallocated model_new (markov_model.c),
-     *                       gets freed in line node_destroy */
-    node->state_len = 0;
+    node->list_char = list_new();
+    /*                  ^^^^ gets freed in line node_destroy */
     return node;
 }
 
@@ -82,24 +80,6 @@ Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* t
     return parent;
 }
 
-/* Function: realloc_node
- * ----------------------
- * Shrink the allocated memory for the set of all characters following a node
- * to the size it actually uses, thus freeing memory that isn't necessary.
- *
- * root | pointer to the the root node of the tree
- */
-void realloc_node(Node* root) {
-    if(root)
-        root->next_state = realloc(root->next_state, root->state_len * sizeof(NextState));
-
-    if(root->left)
-        realloc_node(root->left);
-
-    if(root->right)
-        realloc_node(root->right);
-}
-
 /* Function: append_transition_state
  * ---------------------------------
  * Gets called each time a node is followed by a character. This character
@@ -111,30 +91,14 @@ void realloc_node(Node* root) {
  */
 void append_transition_state(Node* parent, char c) {
 
-    /* If character gets found in set: found = id of element in array
-     * If character is not found in set: found = -1 */
-    int found = -1;
+    ListNode* char_node = list_node_lookup(parent->list_char->head, c);
 
-    for(int i = 1; i < (int) parent->state_len; i++) {
-        if(parent->next_state[i-1].character == c) {
-            found = i-1;
-        }
-    }
-
-    if(found == -1) {
-        /* Only save character if the array has enough space left. */
-        if(parent->state_len < MAX_TRANSITION_CHARS) {
-            NextState l = {
-                .character = c,
-                .frequency = 1,
-                .probability = 0
-            };
-            parent->next_state[parent->state_len++] = l;
-            parent->sum_of_frequencies++;
-        }
+    if(!char_node) {
+        parent->list_char->sum_of_frequencies++;
+        list_node_append(parent->list_char, c);
     } else {
-        parent->next_state[found].frequency++;
-        parent->sum_of_frequencies++;
+        char_node->frequency++;
+        parent->list_char->sum_of_frequencies++;
     }
 }
 
@@ -150,8 +114,8 @@ void node_destroy(Node* node) {
         node_destroy(node->left);
     if(node->right != NULL)
         node_destroy(node->right);
-    if(node->next_state != NULL)
-        free(node->next_state);
+    if(node->list_char != NULL)
+        list_destroy(node->list_char);
     if(node->content != NULL)
         free(node->content);
     free(node);

@@ -2,10 +2,7 @@
 
 void debug_print_node(Node* node, int level, const char* position) {
     printf("{value:\"%s\", level: %d, position: %s next_char: [ ", node->content, level, position);
-    printf("%d", node->state_len);
-    for(int i = 0; i < (int) node->state_len; i++) {
-        printf("{'%c', frequency: %f},", node->next_state[i].character, node->next_state[i].probability);
-    }
+    list_print(node->list_char);
     printf("},\n");
 
     if(node->left) {

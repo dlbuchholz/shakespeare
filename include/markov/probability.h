@@ -4,6 +4,6 @@
 #include <stdio.h>
 
 void calculate_probabilities(Node* root);
-int weighted_random(NextState *p, int n);
+ListNode* weighted_random(ListNode* node);
 
 #endif

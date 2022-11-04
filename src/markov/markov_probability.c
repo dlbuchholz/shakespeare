@@ -8,10 +8,13 @@
  * root | pointer to the the root node of the tree
  */
 void calculate_probabilities(Node* root) {
-    for(int i = 0; i < (int) root->state_len; i++) {
+    ListNode* list_node = root->list_char->head;
+
+    while (list_node != NULL) {
         /* probability of this char =
          * frequency of this char / frequencies of all chars in this set  */
-        root->next_state[i].probability = (double) root->next_state[i].frequency / root->sum_of_frequencies;
+        list_node->probability = (double) list_node->frequency / root->list_char->sum_of_frequencies;
+        list_node = list_node->next_element;
     }
 
     if(root->left)
@@ -32,9 +35,11 @@ void calculate_probabilities(Node* root) {
  * p | pointer to an array of NextState (next possible character)
  * n | length of the array
  */
-int weighted_random(NextState *p, int n) {
+ListNode* weighted_random(ListNode* head) {
     double s = rand() / (RAND_MAX + 1.0);
-    int i;
-    for (i = 0; i < n - 1 && ((s -= p[i].probability) >= 0); i++);
-    return i;
+    ListNode* list_node = head;
+    while (list_node->next_element != NULL && ((s -= list_node->probability) >= 0))
+        list_node = list_node->next_element;
+
+    return list_node;
 }

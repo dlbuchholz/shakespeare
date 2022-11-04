@@ -50,7 +50,6 @@ MarkovModel* model_new(FILE* file, char* search_string, size_t input_length, siz
     }
 
     calculate_probabilities(tree->root);
-    realloc_node(tree->root);
 
     MarkovModel* model = malloc(sizeof(MarkovModel));
     model->tree = tree;
@@ -81,7 +80,7 @@ char next_letter(MarkovModel *state) {
         fprintf(stderr, "Error: Unable to make prediction for search string '%s'", state->search_string);
         exit(EXIT_FAILURE);
     }
-    return n->next_state[weighted_random(n->next_state, (int) n->state_len)].character;
+    return weighted_random(n->list_char->head)->character;
 }
 
 void generate_text(MarkovModel *model) {

@@ -1,6 +1,7 @@
 #ifndef BST_CORE_H_
 #define BST_CORE_H_
 
+#include <linked_list.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,20 +10,12 @@ typedef struct Node Node;
 typedef struct NextState NextState;
 typedef struct Tree Tree;
 
-struct NextState {
-    char character;
-    int frequency;
-    double probability;
-};
-
 struct Node {
     char* content;
     Node* left;
     Node* right;
     size_t length;
-    int sum_of_frequencies;
-    NextState* next_state;
-    size_t state_len;
+    List* list_char;
 };
 
 struct Tree {
