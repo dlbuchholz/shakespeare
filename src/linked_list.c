@@ -66,13 +66,13 @@ ListNode* list_node_lookup(ListNode* head, char character) {
 // Insert a new node at the end of the list
 ListNode* list_node_append(List* list, char character) {
     if(list->head) {
-    ListNode* current = list->head;
+        ListNode* current = list->head;
 
-    while(current->next_element != NULL)
-        current = current->next_element;
+        while(current->next_element != NULL)
+            current = current->next_element;
 
-    current->next_element = list_node_new(character);
-    return current->next_element;
+        current->next_element = list_node_new(character);
+        return current->next_element;
     } else {
         list->head = list_node_new(character);
         return list->head;

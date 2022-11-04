@@ -34,7 +34,7 @@ Tree* tree_from_file(FILE* file, char* search_string, size_t input_length, size_
         c = getc(file);
     }
 
-     if(*output_length == 0)
+    if(*output_length == 0)
         *output_length = counter;
 
     FREE_IF_EXISTS(buffer);

@@ -27,13 +27,16 @@ WARNINGS			:= -Wall -Wextra -Wshadow -Wpointer-arith \
 					   -Wnested-externs -Winline -Wno-long-long \
 	             	   -Wconversion -Wstrict-prototypes -Werror \
 					   # -Werror marks all Warnings as errors
-CFLAGS				:= -g -O2 -pedantic -DDEBUG -I$(DIR_INCLUDE) $(WARNINGS)
+CFLAGS				:= -g -O2 -pedantic -I$(DIR_INCLUDE) $(WARNINGS)
 
 OBJ 				 = $(patsubst $(DIR_SRC)/%.c,$(DIR_OBJ)/%.o, $(DIR_SRCS))
 
 .DEFAULT_GOAL := all
 
 all: shakespeare doc/documentation.pdf
+
+debug: CFLAGS += -DDEBUG
+debug: shakespeare
 
 shakespeare: $(OBJ)
 	mkdir -p obj
