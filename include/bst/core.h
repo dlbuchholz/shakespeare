@@ -25,10 +25,9 @@ struct Tree {
 
 Tree* tree_new (void);
 Node* new_node(const char* content, size_t content_len);
-Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* tree);
+Node* node_insert(Node* parent, const char* content, size_t content_len,
+                  Tree* tree);
 void node_destroy(Node* node);
 void tree_destroy(Tree* tree);
-void append_transition_state(Node* parent, char c);
-void realloc_node(Node* root);
 
 #endif

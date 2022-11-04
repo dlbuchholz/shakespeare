@@ -47,7 +47,8 @@ int main (int argc, char **argv) {
     /*                     ^^^^ gets freed in model_destroy */
     search_string[input_length] = '\0';
 
-    MarkovModel* model = model_new(file, search_string, input_length, output_length);
+    MarkovModel* model = model_new(file, search_string, input_length,
+                                   output_length);
     fclose(file);
 
 #ifdef DEBUG

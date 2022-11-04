@@ -1,13 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// linked_list.c                                                              //
-//                                                                            //
-// Dieser Quellcode beinhaltet die Implementation einer verketteten Liste,    //
-// welche Namen enthält.                                                      //
-//                                                                            //
-// Erstellt am: 19.10.2022                                                    //
-//       Autor: Dennis Lucas Buchholz                                         //
-////////////////////////////////////////////////////////////////////////////////
-
 #include <linked_list.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +20,9 @@ void list_print(List* list) {
     ListNode* node = list->head;
 
     while (node != NULL) {
-        printf("{%c: frequency: %d, probability: %f}", node->character, node->frequency, node->probability);
+        printf("{%c: frequency: %d, probability: %f}", node->character,
+               node->frequency,
+               node->probability);
         node = node->next_element;
     }
 }
@@ -63,18 +55,26 @@ ListNode* list_node_lookup(ListNode* head, char character) {
     return NULL;
 }
 
-// Insert a new node at the end of the list
+/* Insert a new node at the end of the list, if a node with a specific character
+ * doesn't already exist. */
 ListNode* list_node_append(List* list, char character) {
-    if(list->head) {
-        ListNode* current = list->head;
+    list->sum_of_frequencies++;
+    if(!list->head) {
+        list->head = list_node_new(character);
+        return list->head;
+    }
 
+    ListNode* current = list_node_lookup(list->head, character);
+
+    if(current == NULL) {
+        current = list->head;
         while(current->next_element != NULL)
             current = current->next_element;
 
         current->next_element = list_node_new(character);
         return current->next_element;
     } else {
-        list->head = list_node_new(character);
-        return list->head;
+        current->frequency++;
+        return current;
     }
 }

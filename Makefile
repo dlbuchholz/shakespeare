@@ -53,8 +53,8 @@ doc/documentation.pdf:
 	mv documentation.synctex.gz doc/
 
 format:
-	astyle --suffix=none --style=google --recursive "src/*.c"
-	astyle --suffix=none --style=google --recursive "include/*.h"
+	astyle --suffix=none --style=google --max-code-length=80 --recursive "src/*.c"
+	astyle --suffix=none --style=google --max-code-length=80 --recursive "include/*.h"
 
 .PHONY: clean
 

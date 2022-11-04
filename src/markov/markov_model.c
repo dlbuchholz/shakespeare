@@ -5,7 +5,9 @@
 #include <shakespeare.h>
 #include <time.h>
 
-Tree* tree_from_file(FILE* file, char* search_string, size_t input_length, size_t* output_length) {
+Tree* tree_from_file(FILE* file, char* search_string,
+                     size_t input_length,
+                     size_t* output_length) {
 
     Tree *tree = tree_new();
 
@@ -41,9 +43,12 @@ Tree* tree_from_file(FILE* file, char* search_string, size_t input_length, size_
     return tree;
 }
 
-MarkovModel* model_new(FILE* file, char* search_string, size_t input_length, size_t output_length) {
+MarkovModel* model_new(FILE* file, char* search_string,
+                       size_t input_length,
+                       size_t output_length) {
 
-    Tree* tree = tree_from_file(file, search_string, input_length, &output_length);
+    Tree* tree = tree_from_file(file, search_string, input_length,
+                                &output_length);
     if(!tree) {
         FREE_IF_EXISTS(search_string);
         graceful_exit("Error: Unable to generate binary search tree");
@@ -74,10 +79,13 @@ void shift_string(char *words, int len) {
 }
 
 char next_letter(MarkovModel *state) {
-    Node* n = lookup(state->tree->root, state->search_string, state->search_length);
+    Node* n = lookup(state->tree->root, state->search_string,
+                     state->search_length);
     if(!n) {
         model_destroy(state);
-        fprintf(stderr, "Error: Unable to make prediction for search string '%s'", state->search_string);
+        fprintf(stderr,
+                "Error: Unable to make prediction for search string '%s'",
+                state->search_string);
         exit(EXIT_FAILURE);
     }
     return weighted_random(n->list_char->head)->character;

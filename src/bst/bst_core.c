@@ -1,12 +1,6 @@
 #include <bst/core.h>
 #include <macros.h>
 
-/* Maximum amount of characters to store for a search string.
- * 52 is an arbitrary value choosen because the sum of
- * 26 (all lower-case letters) + 26 (all higher-case letters) is 52.
- */
-#define MAX_TRANSITION_CHARS 52
-
 /* Function: tree_new
  * ------------------
  * Declare a new tree, allocate memory for it on the heap and initialize it
@@ -54,10 +48,11 @@ Node* new_node(const char* content, size_t content_len) {
  * content_len | length of the string
  * tree	       | pointer to the binary search tree
  */
-Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* tree) {
+Node* node_insert(Node* parent, const char* content, size_t content_len,
+                  Tree* tree) {
     if(parent == NULL) {
         Node* n = new_node(content, content_len);
-        append_transition_state(n, content[content_len-1]);
+        list_node_append(n->list_char, content[content_len-1]);
         if(tree->root == NULL)
             tree->root = n;
         tree->node_len++;
@@ -70,7 +65,7 @@ Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* t
 
     if (length == 0) {
         /* Save the last char as a possible following char for this node */
-        append_transition_state(parent, content[content_len-1]);
+        list_node_append(parent->list_char, content[content_len-1]);
         return parent;
     } else if(length < 0)
         parent->left = node_insert(parent->left, content, content_len, tree);
@@ -78,28 +73,6 @@ Node* node_insert(Node* parent, const char* content, size_t content_len, Tree* t
         parent->right = node_insert(parent->right, content, content_len, tree);
 
     return parent;
-}
-
-/* Function: append_transition_state
- * ---------------------------------
- * Gets called each time a node is followed by a character. This character
- * shall get added to the node's set of next possible characters, if this
- * character is already included in the set, increase it's counter.
- *
- * parent | pointer to a node
- * c      | character that was found after the node
- */
-void append_transition_state(Node* parent, char c) {
-
-    ListNode* char_node = list_node_lookup(parent->list_char->head, c);
-
-    if(!char_node) {
-        parent->list_char->sum_of_frequencies++;
-        list_node_append(parent->list_char, c);
-    } else {
-        char_node->frequency++;
-        parent->list_char->sum_of_frequencies++;
-    }
 }
 
 /* Function: node_destroy

@@ -1,7 +1,9 @@
 #include <bst/utilities.h>
 
 void debug_print_node(Node* node, int level, const char* position) {
-    printf("{value:\"%s\", level: %d, position: %s next_char: [ ", node->content, level, position);
+    printf("{value:\"%s\", level: %d, position: %s next_char: [ ",
+           node->content,
+           level, position);
     list_print(node->list_char);
     printf("},\n");
 
