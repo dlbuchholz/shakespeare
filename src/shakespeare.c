@@ -45,7 +45,7 @@ int main (int argc, char **argv) {
      * It's size is the specificed input size + 1 (for null-terminator) */
     char* search_string = calloc((input_length + 1), sizeof(char));
     /*                     ^^^^ gets freed in model_destroy */
-    search_string[input_length+1] = '\0';
+    search_string[input_length] = '\0';
 
     MarkovModel* model = model_new(file, search_string, input_length, output_length);
     fclose(file);
