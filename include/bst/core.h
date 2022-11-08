@@ -7,7 +7,6 @@
 #include <string.h>
 
 typedef struct Node Node;
-typedef struct NextState NextState;
 typedef struct Tree Tree;
 
 struct Node {
