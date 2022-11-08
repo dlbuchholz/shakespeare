@@ -25,7 +25,7 @@ WARNINGS			:= -Wall -Wextra -Wshadow -Wpointer-arith \
 					   -Wcast-align -Wwrite-strings -Wmissing-prototypes \
 					   -Wmissing-declarations -Wredundant-decls \
 					   -Wnested-externs -Winline -Wno-long-long \
-	             	   -Wconversion -Wstrict-prototypes -Werror \
+	             	   -Wconversion -Wstrict-prototypes \
 					   # -Werror marks all Warnings as errors
 CFLAGS				:= -g -O2 -pedantic -I$(DIR_INCLUDE) $(WARNINGS)
 
@@ -33,21 +33,31 @@ OBJ 				 = $(patsubst $(DIR_SRC)/%.c,$(DIR_OBJ)/%.o, $(DIR_SRCS))
 
 .DEFAULT_GOAL := all
 
-all: shakespeare doc/documentation.pdf
+all: prepare shakespeare doc/documentation.pdf
 
 debug: CFLAGS += -DDEBUG
 debug: shakespeare
 
-shakespeare: $(OBJ)
+prepare:
+	mkdir -p doc
 	mkdir -p obj
 	mkdir -p obj/bst
 	mkdir -p obj/markov
+	mkdir -p obj/test
+
+shakespeare: $(OBJ)
 	$(CC) $(LDFLAGS) $^ -o $@  $(LIBS)
 
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.c | $(DIR_OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-doc/documentation.pdf:
+test: CFLAGS += -Itest
+test: OBJ += obj/test/test_runner.o
+test: $(filter-out obj/shakespeare.o,$(OBJ))
+	$(CC) $(CFLAGS) test/test_runner.c $^ -o $@  $(LIBS)
+	./test
+	
+doc/documentation.pdf: doc/documentation.tex
 	texify --pdf --synctex=1 --clean doc/documentation.tex
 	mv documentation.pdf doc/
 	mv documentation.synctex.gz doc/
@@ -56,7 +66,7 @@ format:
 	astyle --suffix=none --style=google --max-code-length=80 --recursive "src/*.c"
 	astyle --suffix=none --style=google --max-code-length=80 --recursive "include/*.h"
 
-.PHONY: clean
+.PHONY: all clean test
 
 clean:
 	rm -f $(DIR_OBJ)/*.o *~ core $(INCDIR)/*~

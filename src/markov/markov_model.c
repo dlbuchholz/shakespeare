@@ -2,8 +2,8 @@
 #include <macros.h>
 #include <markov/model.h>
 #include <markov/probability.h>
-#include <shakespeare.h>
 #include <time.h>
+#include <utilities.h>
 
 Tree* tree_from_file(FILE* file, char* search_string,
                      size_t input_length,
@@ -39,7 +39,7 @@ Tree* tree_from_file(FILE* file, char* search_string,
     if(*output_length == 0)
         *output_length = counter;
 
-    FREE_IF_EXISTS(buffer);
+    free(buffer);
     return tree;
 }
 
@@ -50,7 +50,7 @@ MarkovModel* model_new(FILE* file, char* search_string,
     Tree* tree = tree_from_file(file, search_string, input_length,
                                 &output_length);
     if(!tree) {
-        FREE_IF_EXISTS(search_string);
+        free(search_string);
         graceful_exit("Error: Unable to generate binary search tree");
     }
 

@@ -18,9 +18,9 @@ Node *lookup(Node *root, const char *word, size_t word_len) {
 
     if (length == 0)
         return root;
-    else if (length < 0)
-        return lookup(root->left, word, word_len);
     else if (length > 0)
+        return lookup(root->left, word, word_len);
+    else if (length < 0)
         return lookup(root->right, word, word_len);
 
     return NULL;

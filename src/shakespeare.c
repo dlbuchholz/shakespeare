@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <macros.h>
 #include <markov/model.h>
-#include <shakespeare.h>
+#include <utilities.h>
 
 /* Function: main
  * --------------
@@ -25,7 +25,7 @@ int main (int argc, char **argv) {
     /* Maximum length of a filename is 255 characters
      * (+1 character for null-terminator) */
     char* file_name = malloc(sizeof(char) * 256);
-    /*                 ^^^^ gets freed in line 38 */
+    /*                 ^^^^ gets freed in line 39 */
     file_name[0] = '\0';
 
     /* No need to initialize variables since they get initialized in
@@ -36,7 +36,7 @@ int main (int argc, char **argv) {
 
     if(file_name[0] != '\0') {
         file = fopen(file_name, "r");
-        FREE_IF_EXISTS(file_name);
+        free(file_name);
         if(!file)
             graceful_exit("Error: Could not read file");
     }
@@ -56,26 +56,4 @@ int main (int argc, char **argv) {
 #endif
     generate_text(model);
     model_destroy(model);
-}
-
-/* Function: display_usage
- * -------------------------
- * Show the program's help page
- */
-void display_usage(void) {
-    printf("Usage: shakespeare [options] [-f file]\n");
-    printf("Options:\n");
-    printf(" -f     Input file\n");
-    printf(" -l     Output length\n");
-    printf(" -s     Length of input string\n");
-    printf(" -h     Print help page\n");
-}
-
-void graceful_exit(const char* error_message) {
-    if(error_message)
-        fprintf(stderr, error_message);
-    else
-        display_usage();
-
-    exit(EXIT_FAILURE);
 }

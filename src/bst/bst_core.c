@@ -67,9 +67,9 @@ Node* node_insert(Node* parent, const char* content, size_t content_len,
         /* Save the last char as a possible following char for this node */
         list_node_append(parent->list_char, content[content_len-1]);
         return parent;
-    } else if(length < 0)
+    } else if(length > 0)
         parent->left = node_insert(parent->left, content, content_len, tree);
-    else if (length > 0)
+    else if (length < 0)
         parent->right = node_insert(parent->right, content, content_len, tree);
 
     return parent;
